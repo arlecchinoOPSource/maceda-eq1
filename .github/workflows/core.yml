@@ -1,0 +1,22 @@
+name: Core verification
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: core-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build build --config Release --parallel 2
+      - run: ctest --test-dir build -C Release --output-on-failure

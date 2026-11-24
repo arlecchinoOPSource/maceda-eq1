@@ -1,0 +1,20 @@
+# Delivery gates
+
+Current progress lives in [GitHub milestones](https://github.com/arlecchinoOPSource/maceda-eq1/milestones). The foundation builds a static library and native tests. The gates below define evidence for later releases.
+
+| Gate | Development order | Exit evidence |
+| --- | --- | --- |
+| M1 · DSP qualification | [Independent numerical reference](https://github.com/arlecchinoOPSource/maceda-eq1/issues/1), then [parameter transitions](https://github.com/arlecchinoOPSource/maceda-eq1/issues/2) | Complex response measured from audio, full range and rate sweep, documented worst error and stable behavior under rapid edits |
+| M2 · Host integration | [Plugin shell](https://github.com/arlecchinoOPSource/maceda-eq1/issues/3) may start in parallel with numerical qualification. Add [parameters and state](https://github.com/arlecchinoOPSource/maceda-eq1/issues/4) before publishing builds to testers. | AU and VST3 load, dry default nulls, automatable parameters and a saved Live session reproduce the sound after restart |
+| M3 · Screen workflow | [Graph and values](https://github.com/arlecchinoOPSource/maceda-eq1/issues/5), [spectrum](https://github.com/arlecchinoOPSource/maceda-eq1/issues/6), [frame and presets](https://github.com/arlecchinoOPSource/maceda-eq1/issues/7) | User can create a narrow cut, enter its exact settings, identify its band by keyboard, compare bypass, save a preset and recall it in a second instance |
+| M4 · Version 1.0.0 | [Qualification](https://github.com/arlecchinoOPSource/maceda-eq1/issues/8), then [distribution](https://github.com/arlecchinoOPSource/maceda-eq1/issues/9) | Clean installations pass host validation and the acceptance session on both target architectures; maintainer approves tagged binaries and notices |
+| Future hardware | Begin after the screen workflow and parameter contract are stable | One scene controller and screen editor manipulate the same running processor. Switching views preserves sound and automation. |
+
+## Version 1.0.0 acceptance
+
+- Test 44.1, 48, 88.2, 96, 176.4 and 192 kHz with 1, odd, variable and normal block lengths in the harness. Real-host matrix includes 32–2048 samples wherever the device supports them. Verify prepare/reset, independent L/R state, mono, offline bounce, long silence and invalid input state.
+- Compare the independent reference and measured response to 0.05 dB for magnitudes above −90 dB, and use absolute complex error around zeros. The graph target is 0.1 dB above that floor. Check high Q, stacked boosts/cuts, passband unity and reciprocal boost/cut pairs. Record phase and transient error separately. Do not limit the signal to unity to conceal overload.
+- Automate all applicable controls in Live, interrupt parameter ramps, sweep through crossing nodes, switch topology and bypass repeatedly. Check the dry null after settling. Use listening tests on bass, transients and sustained tones alongside numerical tests.
+- Run a 10-minute 48 kHz / 64-sample test on the M4, one stereo instance with all twelve sections enabled. Initial budget: p99 callback below 10% of the block period and no dropouts in an otherwise idle test session. Record OS, power state, host, block sizes, analyzer-on/off and editor-closed results. Record maximum callback time separately and repeat under dense automation and multi-instance load. Target 30 fps analysis and responsive dragging on the built-in display. Review measurements before promising supported instance counts.
+- Restore old golden state fixtures, corrupted input and presets in concurrent instances. Check host automation IDs after an upgrade. Verify scan and processing with pluginval and auval as applicable, then independently audition Live on Mac and Windows.
+- A release candidate produces traceable binaries, license notices, install/uninstall instructions, checksums and a tested OS/host matrix. Verify macOS signing/notarization and Windows installer behavior on clean systems. Sign a release tag or record the release commit and checksums. No open crash, data-loss, compatibility or audible-artifact blocker may ship.
